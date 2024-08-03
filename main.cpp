@@ -11,18 +11,15 @@ struct TreeNode {
 void postOrder(TreeNode* node);
 void inOrder(TreeNode* node);
 void preOrder(TreeNode* node);
-TreeNode* createNode(TreeNode* root);
+TreeNode* createNode(); // Adjusted function declaration
 
 int main() {
     TreeNode* root = nullptr; // Initialize the root of the tree as NULL
     char continueChoice;
 
     while (true) {
-        // Create a new node and add it to the tree
-        root = createNode(root);
-
         // Ask user if they want to continue adding nodes
-        std::cout << "Do you want to continue (y/n)? ";
+        std::cout << "Do you want to add a new node (y/n)? ";
         std::cin >> continueChoice;
 
         // If user chooses 'n' or 'N', break the loop
@@ -30,52 +27,63 @@ int main() {
             break;
         }
 
-        // Perform and display Inorder traversal
-        std::cout << "Inorder is: ";
-        inOrder(root);
-        std::cout << std::endl;
+        // Create a new node and add it to the tree
+        if (root == nullptr) {
+            root = createNode();
+        } else {
+            TreeNode* temp = root;
+            while (true) {
+                char choice;
+                std::cout << "Enter the left or right child (l/r): ";
+                std::cin >> choice;
 
-        // Perform and display Preorder traversal
-        std::cout << "Preorder is: ";
-        preOrder(root);
-        std::cout << std::endl;
-
-        // Perform and display Postorder traversal
-        std::cout << "Postorder is: ";
-        postOrder(root);
-        std::cout << std::endl;
+                if (choice == 'r' || choice == 'R') {
+                    if (temp->right == nullptr) {
+                        temp->right = createNode();
+                        break;
+                    }
+                    temp = temp->right;
+                } else if (choice == 'l' || choice == 'L') {
+                    if (temp->left == nullptr) {
+                        temp->left = createNode();
+                        break;
+                    }
+                    temp = temp->left;
+                }
+            }
+        }
     }
+
+    // Perform and display Inorder traversal
+    std::cout << "Inorder traversal is: ";
+    inOrder(root);
+    std::cout << std::endl;
+
+    // Perform and display Preorder traversal
+    std::cout << "Preorder traversal is: ";
+    preOrder(root);
+    std::cout << std::endl;
+
+    // Perform and display Postorder traversal
+    std::cout << "Postorder traversal is: ";
+    postOrder(root);
+    std::cout << std::endl;
 
     return 0;
 }
 
 // Function to create a new node in the binary tree
-TreeNode* createNode(TreeNode* root) {
-    if (root == nullptr) {
-        // Allocate memory for a new node
-        root = new TreeNode;
-        root->left = nullptr;  // Initialize left child as NULL
-        root->right = nullptr; // Initialize right child as NULL
+TreeNode* createNode() {
+    // Allocate memory for a new node
+    TreeNode* newNode = new TreeNode;
+    newNode->left = nullptr;  // Initialize left child as NULL
+    newNode->right = nullptr; // Initialize right child as NULL
 
-        // Input data for the new node
-        std::cout << "Enter the node data: ";
-        std::cin >> root->data;
+    // Input data for the new node
+    std::cout << "Enter the node data: ";
+    std::cin >> newNode->data;
 
-        return root;
-    }
-
-    char choice;
-    std::cout << "Enter the left or right child (l/r): ";
-    std::cin >> choice;
-
-    // Recursively create left or right child based on user's choice
-    if (choice == 'r' || choice == 'R') {
-        root->right = createNode(root->right);
-    } else if (choice == 'l' || choice == 'L') {
-        root->left = createNode(root->left);
-    }
-
-    return root;
+    return newNode;
 }
 
 // Function to perform Inorder traversal
@@ -107,6 +115,7 @@ void postOrder(TreeNode* node) {
     postOrder(node->right);     // Traverse the right subtree
     std::cout << node->data;    // Visit the root node
 }
+
 
 /*Explanation
 TreeNode structure: Defines a node in the binary tree with left and right pointers and data.
